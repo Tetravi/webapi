@@ -1,20 +1,17 @@
-let first_id = 0
-let second_id = 0
-
-
+const token = "v3fl8l8NrDoAAAAAAAAAAZwVFF7Kv-mSPol8yHPXXi-BIKZq_p4kYGaRvq1snwfX";
 let reporters = require('jasmine-reporters');
+
 let TeamCityReporter = new reporters.TeamCityReporter ({
     savePath: __dirname,
     consolidateAll: false
 });
 
-const token = "v3fl8l8NrDoAAAAAAAAAAZwVFF7Kv-mSPol8yHPXXi-BIKZq_p4kYGaRvq1snwfX"; 
 jasmine.getEnv().addReporter(TeamCityReporter)
 
-describe("upload hello.txt to server", function() {
+describe("Upload file to dropbox", function() {
   let axios = require('axios');
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  let config = {
+  let postMethod = {
       method: 'post',
       url: 'https://content.dropboxapi.com/2/files/upload',
       headers: { 
@@ -22,34 +19,29 @@ describe("upload hello.txt to server", function() {
        'Content-Type': 'application/octet-stream'
      },
       data : {
-       binary: "/Users/i5-8600K/api_js_axios/hello.txt"
+       binary: "/hello.txt"
      }
     };
 
-  it("have to be successfully uploaded", async function() {
-
-    let response_status = 500;
-
-    await axios(config)
+  it("All loaded successfuly", async function() {
+      let responseStatus =0;
+      await axios(postMethod)
       .then( function (response) {
-        response_status  = response.status;
-        first_id = response.id;
+        responseStatus  = response.status;
       })
       .catch(function (error) {
          console.log(error);
       });
 
-  expect(response_status).toBe(200);
+  expect(responseStatus).toBe(200);
     
   }, 10000);
 });
 
-
-
-describe("get metadata from request", function(){
+describe("Get metadata", function(){
   let axios = require('axios');
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  let config = {
+  let getMethod = {
        method: 'post',
        url: 'https://api.dropboxapi.com/2/files/get_metadata',
        headers: { 
@@ -61,41 +53,27 @@ describe("get metadata from request", function(){
        }
     };
 
-  it("have to be successfully got data", async function() {
-    let response_status = 500;
+  it("Metadata gotten successfuly", async function() {
 
-    await axios(config)
+    let responseStatus =0;
+    await axios(getMethod)
     .then(function (response) {
-      response_status = response.status;
+      responseStatus = response.status;
     })
     .catch(function (error) {
       console.log(error);
     });
 
-    expect(response_status).toBe(200);
-    
+    expect(responseStatus).toBe(200);
   }, 10000);
-
-  it("have to be the same id as request", async function(){
-    await axios(config)
-    .then(function (response) {
-      second_id = response.id;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    expect(second_id).toBe(first_id);
-  });
 });
 
-
-
-describe("delete from server", function(){
+describe("Delete file", function(){
   let axios = require('axios');
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-  it("have to be successfully deleted", async function() {
-    let config3 = {
+  it("Deleted successfuly", async function() {
+    let deleteMethod = {
     method: 'post',
     url: 'https://api.dropboxapi.com/2/files/delete_v2',
     headers: { 
@@ -106,20 +84,14 @@ describe("delete from server", function(){
         "path":"/hello.txt"
     }
 };
-
-  let response_status = 500;
-
-  await axios(config3)
+  let responseStatus =0;
+  await axios(deleteMethod)
     .then(function (response) {
-      response_status = response.status;
+      responseStatus = response.status;
     })
     .catch(function (error) {
        console.log(error);
     });
-
-
-  expect(response_status).toBe(200);
-    
+  expect(responseStatus).toBe(200);    
   }, 10000);
-
 });
