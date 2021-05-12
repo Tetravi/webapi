@@ -1,6 +1,3 @@
-let first_id = 0
-let second_id = 0
-
 
 let reporters = require('jasmine-reporters');
 let TeamCityReporter = new reporters.TeamCityReporter ({
@@ -33,7 +30,6 @@ describe("upload hello.txt to server", function() {
     await axios(config)
       .then( function (response) {
         response_status  = response.status;
-        first_id = response.id;
       })
       .catch(function (error) {
          console.log(error);
@@ -75,18 +71,6 @@ describe("get metadata from request", function(){
     expect(response_status).toBe(200);
     
   }, 10000);
-
-  it("have to be the same id as request", async function(){
-    await axios(config)
-    .then(function (response) {
-      second_id = response.id;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    expect(second_id).toBe(first_id);
-  });
-});
 
 
 
