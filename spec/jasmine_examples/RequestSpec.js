@@ -1,3 +1,6 @@
+let first_id = 0
+let second_id = 0
+
 
 let reporters = require('jasmine-reporters');
 let TeamCityReporter = new reporters.TeamCityReporter ({
@@ -8,7 +11,7 @@ let TeamCityReporter = new reporters.TeamCityReporter ({
 const token = "QlPsmlNgZVAAAAAAAAAAAWTyC7Bor5Hyo8zzVhwt1zltG_kDDMGIT66BTZzuyUsL"; 
 jasmine.getEnv().addReporter(TeamCityReporter)
 
-describe("upload txt to server", function() {
+describe("upload hello.txt to server", function() {
   let axios = require('axios');
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   let config = {
@@ -30,6 +33,7 @@ describe("upload txt to server", function() {
     await axios(config)
       .then( function (response) {
         response_status  = response.status;
+        first_id = response.id;
       })
       .catch(function (error) {
          console.log(error);
@@ -71,6 +75,18 @@ describe("get metadata from request", function(){
     expect(response_status).toBe(200);
     
   }, 10000);
+
+  it("have to be the same id as request", async function(){
+    await axios(config)
+    .then(function (response) {
+      second_id = response.id;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    expect(second_id).toBe(first_id);
+  });
+});
 
 
 
