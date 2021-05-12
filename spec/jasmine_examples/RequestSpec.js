@@ -1,6 +1,3 @@
-let first_id = 0
-let second_id = 0
-
 
 let reporters = require('jasmine-reporters');
 let TeamCityReporter = new reporters.TeamCityReporter ({
@@ -11,18 +8,18 @@ let TeamCityReporter = new reporters.TeamCityReporter ({
 const token = "QlPsmlNgZVAAAAAAAAAAAWTyC7Bor5Hyo8zzVhwt1zltG_kDDMGIT66BTZzuyUsL"; 
 jasmine.getEnv().addReporter(TeamCityReporter)
 
-describe("upload text.sorry.txt to server", function() {
+describe("upload txt to server", function() {
   let axios = require('axios');
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   let config = {
       method: 'post',
       url: 'https://content.dropboxapi.com/2/files/upload',
       headers: { 
-       'Dropbox-API-Arg': '{"mode":"add","autorename":true,"mute":false,"path":"/text.sorry.txt"}', 
+       'Dropbox-API-Arg': '{"mode":"add","autorename":true,"mute":false,"path":"/hello.txt"}', 
        'Content-Type': 'application/octet-stream'
      },
       data : {
-       binary: "/Users/i5-8600K/api_js_axios/text.sorry.txt"
+       binary: "/hello.txt"
      }
     };
 
@@ -33,7 +30,6 @@ describe("upload text.sorry.txt to server", function() {
     await axios(config)
       .then( function (response) {
         response_status  = response.status;
-        first_id = response.id;
       })
       .catch(function (error) {
          console.log(error);
@@ -57,7 +53,7 @@ describe("get metadata from request", function(){
          'Authorization': `Bearer ${token}`
        },
        data : {
-        "path":"/text.sorry.txt"
+        "path":"/hello.txt"
        }
     };
 
@@ -76,18 +72,6 @@ describe("get metadata from request", function(){
     
   }, 10000);
 
-  it("have to be the same id as request", async function(){
-    await axios(config)
-    .then(function (response) {
-      second_id = response.id;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    expect(second_id).toBe(first_id);
-  });
-});
-
 
 
 describe("delete from server", function(){
@@ -103,7 +87,7 @@ describe("delete from server", function(){
     'Content-Type': 'application/json'
     },
     data : {
-        "path":"/text.sorry.txt"
+        "path":"/hello.txt"
     }
 };
 
